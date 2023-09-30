@@ -54,6 +54,7 @@ const SignIn = () => {
             label="Email"
             type="email"
             {...register("email")}
+            InputProps={{ style: { borderRadius: "8px" } }}
           />
         </InputWrapper>
         <InputWrapper>
@@ -62,6 +63,7 @@ const SignIn = () => {
             label="Password"
             type="password"
             {...register("password")}
+            InputProps={{ style: { borderRadius: "8px" } }}
           />
         </InputWrapper>
         <ButtonWrapper>

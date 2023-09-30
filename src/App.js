@@ -12,6 +12,7 @@ import MainLayout from "./components/MainLayout";
 import SignIn from "./components/SignIn/";
 import { Provider } from "react-redux";
 import store from "./components/Redux/store";
+import SearchPage from "./components/components/SearchPage";
 
 const Root = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +24,14 @@ const Root = createBrowserRouter(
         element={
           <ProtectedRoute>
             <Main />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="search"
+        element={
+          <ProtectedRoute>
+            <SearchPage />
           </ProtectedRoute>
         }
       />

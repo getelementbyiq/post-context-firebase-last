@@ -70,6 +70,7 @@ const Signup = () => {
             type="email"
             label="Email"
             {...register("email")}
+            InputProps={{ style: { borderRadius: "8px" } }}
           />
         </InputWrapper>
         <InputWrapper>
@@ -78,6 +79,7 @@ const Signup = () => {
             type="password"
             label="Password"
             {...register("password")}
+            InputProps={{ style: { borderRadius: "8px" } }}
           />
         </InputWrapper>
         <InputWrapper>
@@ -88,6 +90,7 @@ const Signup = () => {
             label="Username"
             {...register("username")}
             onChange={(e) => setUsername(e.target.value)}
+            InputProps={{ style: { borderRadius: "8px" } }}
           />
         </InputWrapper>
         <InputWrapper>
@@ -98,6 +101,7 @@ const Signup = () => {
             label="Avatar URL"
             {...register("avatarUrl")}
             onChange={(e) => setAvatarUrl(e.target.value)}
+            InputProps={{ style: { borderRadius: "8px" } }}
           />
         </InputWrapper>
         <ButtonWrapper>

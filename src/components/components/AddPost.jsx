@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import NewPostImg from "../../assets/images/getpaid.gif";
+import Courier from "../../assets/images/courier.png";
+import Sender from "../../assets/images/sender.png";
 
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { IconButton, TextField, Typography } from "@mui/material";
+import {
+  FormControlLabel,
+  IconButton,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
 import AddIcon from "../../assets/icons/add.svg";
 import { useForm } from "react-hook-form";
 import {
@@ -23,6 +31,7 @@ import {
   FormTitle,
   InputModalWrapper,
   InputWrapper,
+  MaterialUISwitch,
   ModalFx,
   PostImageWrapper,
 } from "../GlobalStyles";
@@ -30,6 +39,7 @@ import { UserAuth } from "../../context/AuthContext";
 import { FormSubmitButtonUp } from "./../GlobalStyles";
 import { db } from "../../firebase";
 import { v4 as uuidv4 } from "uuid";
+import ImCourier from "./OutSourcing/ImCourier";
 
 export default function AddPost() {
   const [open, setOpen] = useState(false);
@@ -45,6 +55,14 @@ export default function AddPost() {
     from: "Unknown User",
     avatarUrl: "",
   });
+
+  const [checked, setChecked] = useState(true);
+
+  console.log("checked", checked);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
 
   const handleSetOpen = async () => {
     setPostId(uuidv4());
@@ -123,7 +141,11 @@ export default function AddPost() {
         }}
         onClick={handleSetOpen}
       >
-        <img src={AddIcon} alt="Add" />
+        <img
+          src={AddIcon}
+          alt="Add"
+          style={{ width: "40px", height: "40px" }}
+        />
       </IconButton>
       <Modal
         open={open}
@@ -132,18 +154,55 @@ export default function AddPost() {
         aria-describedby="modal-modal-description"
       >
         <ModalFx>
-          <PostImageWrapper>
-            <img src={NewPostImg} alt="newPost" style={{ height: "150px" }} />
-            <FormTitle>Get paid for your flight</FormTitle>
-          </PostImageWrapper>
-
           <Box>
+            <Box
+              sx={{
+                height: "200px",
+                width: "100%",
+                // border: "1px solid red",
+                mb: "8px",
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                transition: "150ms",
+                backgroundImage: checked ? `url(${Courier})` : `url(${Sender})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                // backgroundPositionY: "",
+              }}
+            >
+              <img src="" alt="" />
+              <Switch
+                checked={checked}
+                onChange={handleChange}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            </Box>
             <form onSubmit={handleSubmit(onSubmit)}>
               <InputModalWrapper>
-                <TextField fullWidth label="From" {...register("pointA")} />
+                <TextField
+                  type="number"
+                  fullWidth
+                  label="Price"
+                  InputProps={{ style: { borderRadius: "16px" } }}
+                  {...register("price")}
+                />
               </InputModalWrapper>
               <InputModalWrapper>
-                <TextField fullWidth label="to" {...register("pointB")} />
+                <TextField
+                  fullWidth
+                  label="From"
+                  InputProps={{ style: { borderRadius: "16px" } }}
+                  {...register("pointA")}
+                />
+              </InputModalWrapper>
+              <InputModalWrapper>
+                <TextField
+                  fullWidth
+                  label="to"
+                  InputProps={{ style: { borderRadius: "16px" } }}
+                  {...register("pointB")}
+                />
               </InputModalWrapper>
               <InputModalWrapper>
                 <TextField
@@ -151,6 +210,7 @@ export default function AddPost() {
                   rows={4}
                   fullWidth
                   label="Write your message"
+                  InputProps={{ style: { borderRadius: "16px" } }}
                   {...register("postContent")}
                 />
               </InputModalWrapper>

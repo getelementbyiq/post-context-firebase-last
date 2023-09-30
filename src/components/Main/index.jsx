@@ -14,9 +14,14 @@ import {
 import AddPost from "../components/AddPost";
 import LogoutFunc from "../components/Logout";
 import GetPosts from "../components/GetPosts";
+import MainPage from "../components/MainPage";
+import MessageComponent from "../components/Messages";
+import { useSelector } from "react-redux";
 
 const Main = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const chatRoomId = useSelector((state) => state.chatRoomId);
+
   const toggleOpen = () => {
     setIsOpen((open) => !open);
   };
@@ -29,7 +34,9 @@ const Main = (props) => {
         justifyContent: "center",
       }}
     >
-      <GetPosts />
+      {/* <GetPosts /> */}
+
+      <MainPage />
     </Box>
   );
 };

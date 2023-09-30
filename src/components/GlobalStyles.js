@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { AppBar, Box, Button, Typography } from "@mui/material";
+import { AppBar, Box, Button, Switch, Typography } from "@mui/material";
 
 export const FlexCenterCenter = styled(Box)(() => ({
   display: "flex",
@@ -43,6 +43,7 @@ export const ButtonWrapper = styled(Box)(() => ({
 export const FormSubmitButtonIn = styled(Button)(() => ({
   height: "60px",
   background: "#0BB1FD",
+  borderRadius: "16px",
   fontSize: "24px",
   fontFamily: "Quicksand",
 }));
@@ -50,6 +51,7 @@ export const FormSubmitButtonIn = styled(Button)(() => ({
 export const FormSubmitButtonUp = styled(Button)(() => ({
   height: "60px",
   background: "#FD540B",
+  borderRadius: "16px",
   fontSize: "24px",
   fontFamily: "Quicksand",
   "&:hover": {
@@ -67,6 +69,7 @@ export const HeaderFX = styled(AppBar)(() => ({
   paddingRight: "20px",
   paddingLeft: "60px",
   boxShadow: "none",
+  marginBottom: "32px",
 }));
 
 export const FormTitle = styled(Typography)(() => ({
@@ -91,15 +94,22 @@ export const HeaderTitle = styled(Typography)(() => ({
   fontSize: "32px",
   color: "#1b1b1b",
   fontFamily: "Quicksand",
+  cursor: "pointer",
+  transition: "300ms",
+  "&:hover": {
+    transform: "scale(1.1)",
+  },
 }));
 
 export const FooterFX = styled(Typography)(() => ({
+  display: "flex",
+  flexDirection: "column",
   width: "100%",
-  height: "100%",
   background: "#014CAC",
   fontSize: "32px",
   color: "#fff",
   fontFamily: "Quicksand",
+  paddingBottom: "100px",
 }));
 
 export const ModalFx = styled(Typography)(() => ({
@@ -136,12 +146,11 @@ export const InputModalWrapper = styled(Box)(() => ({
   marginBottom: "16px",
   width: "100%",
   fontFamily: "Quicksand",
-  border: "1px solid black",
 }));
 
 export const PostImageWrapper = styled(Box)(() => ({
   width: "100%",
-  height: "200px",
+  height: "60px",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -155,6 +164,12 @@ export const PostPaper = styled(Box)(() => ({
   borderRadius: "32px",
   display: "flex",
   flexDirection: "column",
+  cursor: "pointer",
+  transition: "300ms",
+  "&:hover": {
+    transform: "scale(0.96)",
+    background: "#C5F5FF",
+  },
 }));
 
 export const PostPaperFromTo = styled(Box)(() => ({
@@ -180,11 +195,24 @@ export const PostPaperContentWrapper = styled(Box)(() => ({
 
 export const PostPaperMessage = styled(Box)(() => ({
   width: "100%",
-  background: "#C5EAFF",
+  background: "#F4F4F4",
   height: "39px",
   borderRadius: "30px",
   display: "flex",
   alignItems: "center",
   paddingRight: "8px",
   paddingLeft: "8px",
+}));
+
+export const TypographyFX = styled(Typography)(() => ({
+  marginBottom: "26px",
+}));
+
+export const SubTitleFooter = styled(Typography)(() => ({
+  marginBottom: "26px",
+  fontSize: "16px",
+  fontWeight: 500,
+  lineHeight: "18px",
+  letterSpacing: "3px",
+  textAlign: "left",
 }));

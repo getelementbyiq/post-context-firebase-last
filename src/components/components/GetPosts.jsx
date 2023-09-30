@@ -39,11 +39,19 @@ import {
   PostPaperFromTo,
   PostPaperMessage,
 } from "../GlobalStyles";
-import ChatPost from "./ChatPost";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { UserAuth } from "../../context/AuthContext";
 import { db } from "./../../firebase";
+import ChatComponent from "./ChatComponent";
+import PostMenu from "./ChatComponent";
+import MenuPopupState from "./ChatComponent";
+import DenseMenu from "./ChatComponent";
+import BasicMenu from "./ChatComponent";
+import Basic from "./ChatComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { formatTimestamp } from "./FormatTimeStamp";
+import { createChatRoom, sendMessage } from "../Firestore/ChatActions";
 
 export default function GetPosts() {
   const { register, handleSubmit, reset } = useForm();
@@ -57,9 +65,15 @@ export default function GetPosts() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [chatId, setChatId] = useState(null);
   const [chatExists, setChatExists] = useState(false);
+  const chatRooms = useSelector((state) => state.chat);
+  console.log("ChatRoomsDaaataaaa", chatRooms);
 
   const { user } = UserAuth();
   const senderId = user.uid;
+  const [chatRoomId, setChatRoomId] = useState();
+  const dispatch = useDispatch();
+
+  // const selectedPosd = useSelector((state) => state.setSelectedPost);
 
   const goTo = async (post) => {
     handleOpen();
@@ -67,33 +81,33 @@ export default function GetPosts() {
     setSelectedPost(post.data);
   };
 
-  const createChatRoom = async (participants) => {
-    const newChatRoomRef = await addDoc(chatRoomsCollectionRef, {
-      participants,
-      createdAt: serverTimestamp(),
-    });
-    return newChatRoomRef.id;
-  };
+  // const createChatRoom = async (participants) => {
+  //   const newChatRoomRef = await addDoc(chatRoomsCollectionRef, {
+  //     participants,
+  //     createdAt: serverTimestamp(),
+  //   });
+  //   return newChatRoomRef.id;
+  // };
 
-  const sendMessage = async (chatRoomId, messageContent) => {
-    if (!chatRoomId) {
-      console.error("chatRoomId ist nicht gesetzt.");
-      return;
-    }
+  // const sendMessage = async (chatRoomId, messageContent) => {
+  //   if (!chatRoomId) {
+  //     console.error("chatRoomId ist nicht gesetzt.");
+  //     return;
+  //   }
 
-    const messagesCollectionRef = collection(
-      db,
-      "ChatRooms",
-      chatRoomId,
-      "Messages" // Stellen Sie sicher, dass "Messages" auf dieser Ebene ist
-    );
+  //   const messagesCollectionRef = collection(
+  //     db,
+  //     "ChatRooms",
+  //     chatRoomId,
+  //     "Messages" // Stellen Sie sicher, dass "Messages" auf dieser Ebene ist
+  //   );
 
-    await addDoc(messagesCollectionRef, {
-      senderId,
-      messageContent,
-      createdAt: serverTimestamp(),
-    });
-  };
+  //   await addDoc(messagesCollectionRef, {
+  //     senderId,
+  //     messageContent,
+  //     createdAt: serverTimestamp(),
+  //   });
+  // };
 
   const onSubmit = async (data) => {
     const { message } = data;
@@ -111,12 +125,12 @@ export default function GetPosts() {
         const participants = [postCreatorId, senderId];
         const newChatRoomId = await createChatRoom(participants);
         setChatId(newChatRoomId);
+        setChatRoomId(newChatRoomId);
         setChatExists(true);
       }
+      await sendMessage(chatRoomId, message, senderId);
 
-      // Senden Sie die Nachricht
-      await sendMessage(chatId, message);
-      handleClose();
+      //  handleClose();
     } catch (error) {
       console.error("Fehler beim Senden der Nachricht: ", error);
     }
@@ -142,18 +156,6 @@ export default function GetPosts() {
     };
   }, []);
 
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp.toDate());
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Monate sind nullbasiert, daher +1
-    const year = date.getFullYear().toString().slice(-2); // Nur die letzten zwei Stellen des Jahres
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${day.toString().padStart(2, "0")}.${month
-      .toString()
-      .padStart(2, "0")}.${year} / ${hours}:${minutes}`;
-  };
-
   return (
     <Box
       container
@@ -166,6 +168,8 @@ export default function GetPosts() {
         px: "80px",
       }}
     >
+      {/* <YourComponent /> */}
+
       <Box
         container
         sx={{

@@ -30,6 +30,8 @@ import { db } from "../../firebase";
 import ChatDialog from "./ChatDialog";
 import { useSelector } from "react-redux";
 import { fetchUserData } from "../Redux/userApi";
+import { motion } from "framer-motion";
+import ChatCom from "./ChatCom";
 
 const SideBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,50 +39,68 @@ const SideBar = (props) => {
   const [selectedChatRoom, setSelectedChatRoom] = useState(null);
   const [openChatDialog, setOpenChatDialog] = useState(false);
 
+  console.log("chatrooms from sidebar", chatRooms);
+  const [userLoaded, setUserLoaded] = useState(false);
   const { user } = UserAuth();
   const userId = user ? user.uid : null;
 
   const userAvatarUrl = useSelector((state) => state.user.avatarUrl);
 
   useEffect(() => {
-    const fetchChatRooms = async () => {
-      if (!userId) {
-        return;
-      }
+    if (userId) {
+      setUserLoaded(true);
+    }
+  }, userId);
 
-      const chatRoomQuery = firestoreQuery(
-        chatRoomsCollectionRef,
-        firestoreWhere("participants", "array-contains", userId)
-      );
+  useEffect(() => {
+    if (userId && userLoaded) {
+      // Überprüfen, ob der Benutzer geladen ist und userId nicht null ist
+      const fetchChatRooms = async () => {
+        const chatRoomQuery = firestoreQuery(
+          chatRoomsCollectionRef,
+          firestoreWhere("participants", "array-contains", userId)
+        );
 
-      const unsubscribe = onSnapshot(chatRoomQuery, async (snapshot) => {
-        const chatRoomData = snapshot.docs.map(async (doc) => {
-          const chatRoom = doc.data();
-          const otherParticipantId = chatRoom.participants.find(
-            (participantId) => participantId !== userId
-          );
+        const unsubscribe = onSnapshot(chatRoomQuery, async (snapshot) => {
+          const chatRoomData = snapshot.docs.map(async (doc) => {
+            const chatRoom = doc.data();
+            const otherParticipantId = chatRoom.participants.find(
+              (participantId) => participantId !== userId
+            );
 
-          // Abrufen der Benutzerdaten des Gesprächspartners
-          const participantData = await fetchUserData(otherParticipantId);
+            // Abrufen der Benutzerdaten des Gesprächspartners
+            const participantData = await fetchUserData(otherParticipantId);
 
-          return {
-            id: doc.id,
-            data: chatRoom,
-            participantData: participantData,
-          };
+            return {
+              id: doc.id,
+              data: chatRoom,
+              participantData: participantData,
+            };
+          });
+          const chatRoomsWithParticipants = await Promise.all(
+            chatRoomData
+          ).catch((error) => {
+            console.error(
+              "Fehler beim Abrufen von Chatrooms mit Teilnehmerdaten:",
+              error
+            );
+            return [];
+          });
+
+          setChatRooms(chatRoomsWithParticipants);
         });
-        const chatRoomsWithParticipants = await Promise.all(chatRoomData);
-        setChatRooms(chatRoomsWithParticipants);
-      });
-    };
+      };
+      fetchChatRooms();
+    }
 
-    fetchChatRooms();
+    console.log("participantsData", chatRooms.participantData);
+    console.log("------------------------------");
 
     return () => {
       // Aufräumen beim Verlassen der Komponente
       // unsubscribe();
     };
-  }, [userId]);
+  }, [userId, userLoaded]);
 
   const toggleOpen = () => {
     setIsOpen((open) => !open);
@@ -113,13 +133,13 @@ const SideBar = (props) => {
           alignItems: "center",
           position: "absolute",
           right: "0",
-          top: "-20px",
+          top: "-24px",
         }}
       >
         <LogoutFunc />
         <AddPost />
-        <Badge badgeContent={4}>
-          <IconButton
+        {/* <Badge badgeContent={4}> */}
+        {/* <IconButton
             onClick={toggleOpen}
             sx={{
               width: "50px",
@@ -194,10 +214,10 @@ const SideBar = (props) => {
               />
             ))}
           </Box>
-        </Collapse>
+        </Collapse> */}
       </Box>
 
-      <Dialog
+      {/* <Dialog
         open={openChatDialog}
         onClose={handleCloseChatDialog}
         PaperProps={{ width: "1000px" }}
@@ -210,12 +230,19 @@ const SideBar = (props) => {
         </Box>
         <DialogContent sx={{ width: "600px", height: "700px" }}>
           {selectedChatRoom ? (
-            <ChatDialog chatRoom={selectedChatRoom} userId={userId} />
+            <ChatDialog
+              chatRoom={selectedChatRoom}
+              userId={userId}
+              chatRooms={chatRooms}
+              userAvatar={
+                selectedChatRoom.participantData?.avatarUrl || userAvatarUrl
+              }
+            />
           ) : (
             <div>Loading...</div>
           )}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </Box>
   );
 };
